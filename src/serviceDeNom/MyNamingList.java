@@ -1,9 +1,14 @@
 package serviceDeNom;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyNamingList {
+public class MyNamingList implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7838973735058822379L;
 	public List<String> serverList = new ArrayList<String>();
 	public List<String> repartitorList = new ArrayList<String>();
 	public int nbrServer = this.serverList.size();

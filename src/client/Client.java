@@ -18,7 +18,7 @@ public class Client {
 		String operationFile = null;
 		int distantPort;
 
-		if (args.length > 2) {
+		if (args.length == 3) {
 			distantHostname = args[0];
 			distantPort = Integer.parseInt(args[1]);
 			operationFile = args[2];

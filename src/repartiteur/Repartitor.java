@@ -11,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import serviceDeNom.MyNamingList;
 import shared.MyIPAddress;
 import shared.NamingServiceInterface;
 import shared.RepartitorInterface;
@@ -38,6 +39,19 @@ public class Repartitor extends Thread implements RepartitorInterface {
 
 		}
 
+	};
+	
+	Thread sendOp = new Thread() {
+		public void run() {
+			System.out.println("distributing the list of OP");
+			try {
+				MyNamingList serverList = namingService.getServerList();
+				
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	};
 
 	public static void main(String[] args) {
@@ -117,27 +131,10 @@ public class Repartitor extends Thread implements RepartitorInterface {
 	public int distribute(byte[] operations) throws RemoteException {
 		String operationsStr = new String(operations);
 		DistributedOP.operationList = new ArrayList<String>(Arrays.asList(operationsStr.split("\n")));
+		sendOp.start();
 		//DistributedOP.RepartitionTache(namingList);
 		return 1234;
 	}
-//	public List<String> getServerList() throws RemoteException {
-//		return namingList.serverList;
-//	}
-	
-//	public List<String> getRepartitorList() throws RemoteException {
-//		return namingList.repartitorList;
-//	}
-//	
-//	public void addServerToList(String ServerIP) throws RemoteException {
-//		namingList.AddServerToList(ServerIP);
-//	}
-//
-//	@Override
-//	public boolean serverAuth(String serverIP) throws RemoteException {
-//		Boolean isServerAdded = namingList.AddServerToList(serverIP);
-//		return isServerAdded;
-//		
-//	}
 
 
 }

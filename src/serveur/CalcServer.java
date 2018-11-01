@@ -35,7 +35,7 @@ public class CalcServer extends Thread {
 
 	Thread calculate = new Thread() {
 		public void run() {
-
+			System.out.println("Server ready to accept Operations");
 		}
 
 	};
@@ -68,6 +68,7 @@ public class CalcServer extends Thread {
 		repartServer = loadRepartitorStub(repartitorIP, repartitorPort);
 		namingServer = loadNamingServiceStub(NamingIP, NamingPort);
 		authMe.start();
+		calculate.start();
 
 	}
 

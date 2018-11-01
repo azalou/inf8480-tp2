@@ -76,7 +76,7 @@ public class CalcServer extends Thread {
 		NamingServiceInterface stub = null;
 		try {
 			Registry registre = LocateRegistry.getRegistry(distantHostname, distantPort);
-			stub = (NamingServiceInterface) registre.lookup("nameserver");
+			stub = (NamingServiceInterface) registre.lookup(myID.myUniqueID);
 		} catch (NotBoundException e) {
 			System.err.println("Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
 		} catch (AccessException e) {

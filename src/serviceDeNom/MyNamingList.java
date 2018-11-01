@@ -6,7 +6,7 @@ import java.util.List;
 
 public class MyNamingList implements Serializable {
 	/**
-	 * 
+	 * This object can be loaded by the repartitor
 	 */
 	private static final long serialVersionUID = -7838973735058822379L;
 	public List<String> serverList = new ArrayList<String>();

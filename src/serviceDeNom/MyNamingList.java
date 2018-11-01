@@ -21,10 +21,10 @@ public class MyNamingList implements Serializable {
 		}
 		return false;
 	}
-	public boolean AddRepartitorToList (String IP) {
-		if (!this.repartitorList.contains(IP.trim())) {
-			System.out.println("added " + IP + " as a Repartitor");
-			return this.repartitorList.add(IP.trim());
+	public boolean addRepartitorIfAbsent (String login, String IP) {
+		if (!this.repartitorList.contains(login.trim() + ":" + IP.trim())) {
+			System.out.println("added " + login.trim() + ":" + IP.trim() + " as a Repartitor");
+			return this.repartitorList.add(login.trim() + ":" + IP.trim());
 		}
 		return false;
 	}

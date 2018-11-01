@@ -10,16 +10,16 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import serviceDeNom.MyNamingList;
 import shared.MyIPAddress;
 import shared.NamingServiceInterface;
 import shared.RepartitorInterface;
 
-
-
 public class Repartitor extends Thread implements RepartitorInterface {
 	private static final int RMIREGISTRY_PORT = 5001;
+	private String username = "repartitor1";
+	private String password = "repartitor1";
 	private static MyIPAddress ip = new MyIPAddress();
 	//private MyNamingList namingList = new MyNamingList();
 	private RepartiteurServant DistributedOP = new RepartiteurServant();
@@ -28,11 +28,11 @@ public class Repartitor extends Thread implements RepartitorInterface {
 		public void run() {
 			try {
 				while (repartitorUp) {
-					namingService.makeAuth(ip.ipAddress, "repartitor");
+					namingService.makeRepartitorAuth(ip.ipAddress, username, password);
 					Thread.sleep(4000);
 				}
 			} catch (RemoteException e) {
-				System.err.println("Erreur d'enregistrement du Répartiteur " + e.getMessage());
+				System.err.println("Erreur d'enregistrement du Répartiteur " + e.getMessage() + "\n le service de nom est il joignable?" );
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -45,7 +45,7 @@ public class Repartitor extends Thread implements RepartitorInterface {
 		public void run() {
 			System.out.println("distributing the list of OP");
 			try {
-				MyNamingList serverList = namingService.getServerList();
+				DistributedOP.makeServerlist(namingService.getServerList().serverList);
 				
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block

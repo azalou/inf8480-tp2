@@ -8,8 +8,10 @@ import serviceDeNom.MyNamingList;
 
 public interface NamingServiceInterface extends Remote {
 
-	boolean makeAuth(String ipAddr, String type) throws RemoteException;
+	boolean makeServerAuth(String ipAddr) throws RemoteException;
 	MyNamingList getServerList() throws RemoteException;
+	boolean makeRepartitorAuth(String ipAddress, String username, String password) throws RemoteException;
+	boolean verifyRepartitor(String login, String password) throws RemoteException;
 	
 	
 

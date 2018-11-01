@@ -15,12 +15,12 @@ public class CalcServer extends Thread {
 	private NamingServiceInterface namingServer;
 	private static MyIPAddress ip = new MyIPAddress();
 	private Boolean serverUp = true;
-	private int Capacite;
+	private int Capacite = 4;
 	Thread authMe = new Thread() {
 		public void run() {
 			try {
 				while (serverUp) {
-					namingServer.makeAuth(ip.ipAddress, "server");
+					namingServer.makeServerAuth(ip.ipAddress);
 					Thread.sleep(4000);
 				}
 			} catch (RemoteException e) {
@@ -28,9 +28,7 @@ public class CalcServer extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
 		}
-
 	};
 
 	Thread calculate = new Thread() {

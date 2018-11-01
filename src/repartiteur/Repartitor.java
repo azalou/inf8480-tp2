@@ -1,26 +1,30 @@
 package repartiteur;
 
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import shared.MyIPAddress;
+import shared.NamingService;
 import shared.ServerInterface;
+
+
 
 public class Repartitor implements ServerInterface {
 	private static final int RMIREGISTRY_PORT = 5001;
+	private static MyIPAddress ip = new MyIPAddress();
+	private NamingService namingList = new NamingService();
+	private RepartiteurServant DistributedOP = new RepartiteurServant(); 
 
 
 	public static void main(String[] args) {
 		Repartitor repartitor = new Repartitor();
 		repartitor.run();
-
 	}
 	
 	public Repartitor() {
@@ -36,11 +40,14 @@ public class Repartitor implements ServerInterface {
 			ServerInterface ClientStub = (ServerInterface) UnicastRemoteObject
 					.exportObject(this, 0);
 
-			String repartitor_ip_address = getTheRightIP("192");
+			ip.getTheRightIP("192");
+			String repartitor_ip_address = ip.ipAddress;
+			namingList.AddRepartitorToList(repartitor_ip_address);
 			Registry registry = LocateRegistry.getRegistry(repartitor_ip_address , RMIREGISTRY_PORT);
 			registry.rebind("repartitor", ClientStub);
 			System.out.println("Repartitor ready.");
-			System.out.println("Running on " + repartitor_ip_address + " & PORT = " + RMIREGISTRY_PORT);
+			System.out.println("Running on " + repartitor_ip_address + ":" + RMIREGISTRY_PORT);
+			
 		} catch (ConnectException e) {
 			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lancé ?");
 			System.err.println();
@@ -49,37 +56,33 @@ public class Repartitor implements ServerInterface {
 			System.err.println("Erreur: " + e.getMessage());
 		}
 	}
-	
-	
-	private String getTheRightIP(String ipFirstOctet) {
-		Enumeration<NetworkInterface> enuInterface;
-		String ip = "000";
-		InetAddress rightInet = null;
-		try {
-			enuInterface = NetworkInterface.getNetworkInterfaces();
-			while (enuInterface.hasMoreElements()) {
-				NetworkInterface net = (NetworkInterface) enuInterface.nextElement();
-				Enumeration<InetAddress> ee = net.getInetAddresses();
-				while (ee.hasMoreElements()) {
-					rightInet = (InetAddress) ee.nextElement();
-					ip = rightInet.getHostAddress().split("\\.")[0];
-					if (ip.equals(ipFirstOctet)) {
-						return rightInet.getHostAddress();
-					}
-				}
-			}
-		} catch (SocketException e1) {
-			e1.printStackTrace();
-		}
-		return null;
-	}
 
 
 
 	//Fonctions RMI
 	@Override
 	public int distribute(byte[] operations) throws RemoteException {
+		String operationsStr = new String(operations);
+		DistributedOP.operationList = new ArrayList<String>(Arrays.asList(operationsStr.split("\n")));
+		DistributedOP.RepartitionTache(namingList);
 		return 1234;
+	}
+//	public List<String> getServerList() throws RemoteException {
+//		return namingList.serverList;
+//	}
+	
+	public List<String> getRepartitorList() throws RemoteException {
+		return namingList.repartitorList;
+	}
+	
+	public void addServerToList(String ServerIP) throws RemoteException {
+		namingList.AddServerToList(ServerIP);
+	}
+
+	@Override
+	public void serverAuth() throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

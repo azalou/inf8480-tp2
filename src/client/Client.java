@@ -11,10 +11,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import shared.ServerInterface;
 
-
 public class Client {
-	
-	
+
 	public static void main(String[] args) {
 		String distantHostname = null;
 		String operationFile = null;
@@ -25,17 +23,14 @@ public class Client {
 			distantPort = Integer.parseInt(args[1]);
 			operationFile = args[2];
 			try {
-				
-				byte[] operations;
 				File fic = new File(operationFile);
-				operations = new byte[(int) fic.length()];
+				byte[] operations = new byte[(int) fic.length()];
 				Client client = new Client(distantHostname, distantPort);
-				FileInputStream fis = new FileInputStream(fic);
-				fis.read(operations, 0, operations.length);
+				FileInputStream fis = new FileInputStream(operationFile);
+				fis.read(operations);
 				client.run(operations);
 				fis.close();
-				
-				
+
 			} catch (FileNotFoundException e) {
 				System.err.println("File not Found");
 			} catch (IOException e) {
@@ -45,48 +40,43 @@ public class Client {
 			System.err.println("mandarory arguments: <IP> <PORT> <File NAME>");
 		}
 
-		
 	}
-	
-	private ServerInterface repartiteur;
-	
+
+	private ServerInterface repartClient;
+
 	public Client(String distantHostname, Integer distantPort) {
 		super();
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
-		repartiteur = loadServerStub(distantHostname, distantPort);
-		
+		repartClient = loadServerStub(distantHostname, distantPort);
 	}
 
 	private ServerInterface loadServerStub(String distantRepartitor, int distantPort) {
 		ServerInterface stub = null;
-		
+
 		try {
-			Registry registre = LocateRegistry.getRegistry(distantRepartitor , distantPort);
+			Registry registre = LocateRegistry.getRegistry(distantRepartitor, distantPort);
 			stub = (ServerInterface) registre.lookup("repartitor");
 		} catch (NotBoundException e) {
-			System.err.println("Le nom '" + e.getMessage() + 
-					"' n'est pas défini dans le registre.");
+			System.err.println("Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
 		} catch (AccessException e) {
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
 			System.err.println("Erreur: " + e.getMessage());
 		}
-		
+
 		return stub;
 	}
 
 	private void run(byte[] operations) {
 		try {
-			int resultat = repartiteur.distribute(operations);
+			int resultat = repartClient.distribute(operations);
 			System.out.println(resultat);
 		} catch (RemoteException e) {
 			System.err.println("Erreur: " + e.getMessage());
 		}
-		
+
 	}
-	
-	
 
 }

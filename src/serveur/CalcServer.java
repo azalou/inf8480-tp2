@@ -6,21 +6,22 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import shared.MyIPAddress;
+import shared.MyIDentifier;
 import shared.NamingServiceInterface;
 import shared.RepartitorInterface;
 
 public class CalcServer extends Thread {
 	private RepartitorInterface repartServer;
 	private NamingServiceInterface namingServer;
-	private static MyIPAddress ip = new MyIPAddress();
+	private static MyIDentifier myID = new MyIDentifier();
 	private Boolean serverUp = true;
+	private String serverID = null;
 	private int Capacite = 4;
 	Thread authMe = new Thread() {
 		public void run() {
 			try {
 				while (serverUp) {
-					namingServer.makeServerAuth(ip.ipAddress);
+					namingServer.makeServerAuth(myID.ipAddress,myID.myUniqueID);
 					Thread.sleep(4000);
 				}
 			} catch (RemoteException e) {
@@ -39,7 +40,8 @@ public class CalcServer extends Thread {
 	};
 
 	public static void main(String[] args) {
-		ip.getTheRightIP("192");
+		myID.getTheRightIP("192");
+		myID.randomIdGen();
 		String repartitorIP = null;
 		byte[] operationList = null;
 		int repartitorPort;

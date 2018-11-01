@@ -5,8 +5,13 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-public class MyIPAddress {
+public class MyIDentifier {
+	
+	private static final String CHOOSE_CHAR_FROM_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	
 	public String ipAddress = null;
+	public String myUniqueID = null;
+	
 	public void getTheRightIP(String ipFirstOctet) {
 		Enumeration<NetworkInterface> enuInterface;
 		String ip = "000";
@@ -27,6 +32,14 @@ public class MyIPAddress {
 		} catch (SocketException e1) {
 			e1.printStackTrace();
 		}
+	}
+	public void randomIdGen () {
+		StringBuilder letsMakeID = new StringBuilder();
+		for (int i=0; i < 12; i++) {
+			int chosen = (int)(Math.random()*CHOOSE_CHAR_FROM_LIST.length());
+			letsMakeID.append(CHOOSE_CHAR_FROM_LIST.charAt(chosen));
+		}
+		this.myUniqueID = letsMakeID.toString();
 	}
 
 }

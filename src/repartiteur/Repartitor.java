@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import shared.MyIPAddress;
+import shared.MyIDentifier;
 import shared.NamingServiceInterface;
 import shared.RepartitorInterface;
 
@@ -20,7 +20,7 @@ public class Repartitor extends Thread implements RepartitorInterface {
 	private static final int RMIREGISTRY_PORT = 5001;
 	private String username = "repartitor1";
 	private String password = "repartitor1";
-	private static MyIPAddress ip = new MyIPAddress();
+	private static MyIDentifier ip = new MyIDentifier();
 	//private MyNamingList namingList = new MyNamingList();
 	private RepartiteurServant DistributedOP = new RepartiteurServant();
 	private static Boolean repartitorUp = false;

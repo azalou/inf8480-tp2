@@ -14,10 +14,10 @@ public class MyNamingList implements Serializable {
 	public int nbrServer = this.serverList.size();
 	public int nbrRepartitor = this.repartitorList.size();
 	
-	public boolean AddServerToList (String IP) {
-		if (!this.serverList.contains(IP.trim())) {
-		System.out.println("added " + IP + " as a Server");
-		return this.serverList.add(IP.trim());
+	public boolean AddServerToList (String uniqueID, String IP) {
+		if (!this.serverList.contains(uniqueID + ":" + IP.trim())) {
+		System.out.println("added " + uniqueID + ":" + IP.trim() + " as a Server");
+		return this.serverList.add(uniqueID + ":" + IP.trim());
 		}
 		return false;
 	}

@@ -12,13 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import shared.MyIPAddress;
+import shared.MyIDentifier;
 import shared.NamingServiceInterface;
 
 
 public class ServiceDeNom implements NamingServiceInterface {
 	private static final int RMIREGISTRY_PORT = 5002;
-	private static MyIPAddress ip = new MyIPAddress();
+	private static MyIDentifier ip = new MyIDentifier();
 	private static final String REPART_LOGINS = "repartitors.txt";
 	private MyNamingList namingList = new MyNamingList();
 
@@ -80,9 +80,9 @@ public class ServiceDeNom implements NamingServiceInterface {
 	 * @see shared.NamingServiceInterface
 	 */
 		@Override
-		public boolean makeServerAuth(String ipAddr) throws RemoteException {
+		public boolean makeServerAuth(String ipAddr,String uniqueID) throws RemoteException {
 			
-				return namingList.AddServerToList(ipAddr);
+				return namingList.AddServerToList(uniqueID,ipAddr);
 		}
 		
 		@Override

@@ -4,15 +4,14 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import shared.NamingService;
 
 public class RepartiteurServant {
 	public ArrayList<String> operationList;
+	//public int nbrOperations = this.operationList.size();
 	
-	void RepartitionTache(NamingService namingList) {
-		
-		long taille_de_liste = namingList.serverList.size();
-		
-	}
+//	void RepartitionTache(MyNamingList namingList) {
+//		int nbrServer = namingList.nbrServer;
+//		// On 		
+//	}
 
 }

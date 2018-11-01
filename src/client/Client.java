@@ -9,7 +9,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import shared.ServerInterface;
+import shared.RepartitorInterface;
 
 public class Client {
 
@@ -37,27 +37,27 @@ public class Client {
 				System.err.println("Couldn't read file " + e.getMessage());
 			}
 		} else {
-			System.err.println("mandarory arguments: <IP> <PORT> <File NAME>");
+			System.err.println("mandarory arguments: <RepartitorIP> <RepartitorPORT> <File NAME>");
 		}
 
 	}
 
-	private ServerInterface repartClient;
+	private RepartitorInterface repartClient;
 
 	public Client(String distantHostname, Integer distantPort) {
 		super();
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
-		repartClient = loadServerStub(distantHostname, distantPort);
+		repartClient = loadRepartitorStub(distantHostname, distantPort);
 	}
 
-	private ServerInterface loadServerStub(String distantRepartitor, int distantPort) {
-		ServerInterface stub = null;
+	private RepartitorInterface loadRepartitorStub(String distantRepartitor, int distantPort) {
+		RepartitorInterface stub = null;
 
 		try {
 			Registry registre = LocateRegistry.getRegistry(distantRepartitor, distantPort);
-			stub = (ServerInterface) registre.lookup("repartitor");
+			stub = (RepartitorInterface) registre.lookup("repartitor");
 		} catch (NotBoundException e) {
 			System.err.println("Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
 		} catch (AccessException e) {

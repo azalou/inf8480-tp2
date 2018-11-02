@@ -5,9 +5,6 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="DistributedOP">
     <property environment="env"/>
-    <property name="workspace_loc:DistributedOP/bin/serveur" value="bin/serveur"/>
-    <property name="workspace_loc:DistributedOP/bin/serviceDeNom" value="bin/serviceDeNom"/>
-    <property name="workspace_loc:DistributedOP/bin/client" value="bin/client"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="9"/>
     <property name="source" value="9"/>
@@ -37,6 +34,11 @@
     </target>
     <target name="clean">
         <delete dir="bin"/>
+        <delete file="calcserver.jar"/>
+        <delete file="clientop.jar"/>
+        <delete file="repartiteur.jar"/>
+        <delete file="sharedinterfaces.jar"/>
+        <delete file="serviceDeNom.jar"/>
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>
@@ -63,27 +65,30 @@
         <antcall target="build"/>
     </target>
     <target name="Repartitor">
-        <java classname="repartiteur.Repartitor" failonerror="true" fork="yes">
-            <jvmarg line="-Djava.security.policy=policy"/>
+        <java classname="ca.inf8480.tp2.repartiteur.Repartitor" failonerror="true" fork="yes">
             <classpath refid="run.Repartitor.classpath"/>
         </java>
     </target>
     <target name="CalcServer">
-        <java classname="serveur.CalcServer" dir="${workspace_loc:DistributedOP/bin/serveur}" failonerror="true" fork="yes">
-            <jvmarg line="-Djava.security.policy=policy"/>
+        <java classname="ca.inf8480.tp2.serveur.CalcServer" failonerror="true" fork="yes">
             <classpath refid="run.CalcServer.classpath"/>
         </java>
     </target>
     <target name="ServiceDeNom">
-        <java classname="serviceDeNom.ServiceDeNom" dir="${workspace_loc:DistributedOP/bin/serviceDeNom}" failonerror="true" fork="yes">
-            <jvmarg line="-Djava.security.policy=policy"/>
+        <java classname="ca.inf8480.tp2.serviceDeNom.ServiceDeNom" failonerror="true" fork="yes">
             <classpath refid="run.ServiceDeNom.classpath"/>
         </java>
     </target>
     <target name="ClientOP">
-        <java classname="client.Client" dir="${workspace_loc:DistributedOP/bin/client}" failonerror="true" fork="yes">
-            <jvmarg line="-Djava.security.policy=policy"/>
+        <java classname="ca.inf8480.tp2.client.Client" failonerror="true" fork="yes">
             <classpath refid="run.ClientOP.classpath"/>
         </java>
+    </target>
+    <target depends="build-project" name="build-jar">
+        <jar destfile="sharedinterfaces.jar" basedir="bin" includes="ca/inf8480/tp2/shared/**" update="false" />
+        <jar destfile="calcserver.jar" basedir="bin" includes="ca/inf8480/tp2/serveur/**" update="false" />
+        <jar destfile="clientop.jar" basedir="bin" includes="ca/inf8480/tp2/client/**" update="false" />
+        <jar destfile="repartiteur.jar" basedir="bin" includes="ca/inf8480/tp2/repartiteur/**" update="false" />
+        <jar destfile="serviceDeNom.jar" basedir="bin" includes="ca/inf8480/tp2/serviceDeNom/**" update="false" />
     </target>
 </project>

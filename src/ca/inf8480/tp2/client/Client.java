@@ -1,4 +1,4 @@
-package client;
+package ca.inf8480.tp2.client;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import shared.RepartitorInterface;
+
+import ca.inf8480.tp2.shared.RepartitorInterface;
 
 public class Client {
 

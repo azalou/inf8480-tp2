@@ -1,4 +1,4 @@
-package shared;
+package ca.inf8480.tp2.shared;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

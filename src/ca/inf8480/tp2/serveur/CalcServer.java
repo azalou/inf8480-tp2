@@ -1,4 +1,4 @@
-package serveur;
+package ca.inf8480.tp2.serveur;
 
 import java.rmi.AccessException;
 import java.rmi.ConnectException;
@@ -9,9 +9,9 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
-import shared.MyIDentifier;
-import shared.NamingServiceInterface;
-import shared.ServerInterface;
+import ca.inf8480.tp2.shared.MyIDentifier;
+import ca.inf8480.tp2.shared.NamingServiceInterface;
+import ca.inf8480.tp2.shared.ServerInterface;
 
 public class CalcServer extends Thread implements ServerInterface {
 	private NamingServiceInterface namingServer;

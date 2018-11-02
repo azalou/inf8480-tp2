@@ -7,7 +7,7 @@
  *
  */
 
-package serveur;
+package ca.inf8480.tp2.serveur;
 
 public class Operations {
 	

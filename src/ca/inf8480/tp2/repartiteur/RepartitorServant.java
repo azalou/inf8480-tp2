@@ -1,4 +1,4 @@
-package repartiteur;
+package ca.inf8480.tp2.repartiteur;
 
 import java.io.Serializable;
 import java.rmi.NotBoundException;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import shared.ServerInterface;
+import ca.inf8480.tp2.shared.ServerInterface;
 
 
 public class RepartitorServant implements Serializable{

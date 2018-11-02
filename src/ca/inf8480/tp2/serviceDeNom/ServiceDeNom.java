@@ -1,4 +1,4 @@
-package serviceDeNom;
+package ca.inf8480.tp2.serviceDeNom;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,8 +9,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Objects;
 
-import shared.MyIDentifier;
-import shared.NamingServiceInterface;
+import ca.inf8480.tp2.shared.MyIDentifier;
+import ca.inf8480.tp2.shared.MyNamingList;
+import ca.inf8480.tp2.shared.NamingServiceInterface;
 
 
 public class ServiceDeNom implements NamingServiceInterface {

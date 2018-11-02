@@ -1,4 +1,4 @@
-package repartiteur;
+package ca.inf8480.tp2.repartiteur;
 
 
 import java.rmi.AccessException;
@@ -11,9 +11,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import shared.MyIDentifier;
-import shared.NamingServiceInterface;
-import shared.RepartitorInterface;
+import ca.inf8480.tp2.shared.MyIDentifier;
+import ca.inf8480.tp2.shared.NamingServiceInterface;
+import ca.inf8480.tp2.shared.RepartitorInterface;
 
 public class Repartitor extends Thread implements RepartitorInterface {
 	private static final int RMIREGISTRY_PORT = 5001;

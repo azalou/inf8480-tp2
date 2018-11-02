@@ -1,4 +1,4 @@
-package serviceDeNom;
+package ca.inf8480.tp2.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;

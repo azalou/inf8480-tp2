@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import shared.NamingServiceInterface;
 import shared.ServerInterface;
 
 
@@ -42,7 +41,6 @@ public class RepartitorServant implements Serializable{
 	
 	public int sendOpToServer() throws RemoteException, NotBoundException {
 		//Connection RMI à l'ensemble de serveur et tentatives d'Envoie des opérations
-		int i=0;
 		int somme = 0; 
 		for (String key: this.serverHashMap.keySet()) {
 			Registry registre = LocateRegistry.getRegistry(this.serverHashMap.get(key), 5003);

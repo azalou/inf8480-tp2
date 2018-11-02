@@ -10,7 +10,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import shared.MyIDentifier;
 import shared.NamingServiceInterface;
@@ -142,7 +141,6 @@ public class Repartitor extends Thread implements RepartitorInterface {
 		try {
 			sendOp.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return resultat;

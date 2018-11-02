@@ -72,7 +72,7 @@ public class Client {
 	private void run(byte[] operations) {
 		try {
 			int resultat = repartClient.distribute(operations);
-			System.out.println(resultat);
+			System.out.println("Resultat de calcul: " + resultat);
 		} catch (RemoteException e) {
 			System.err.println("Erreur: " + e.getMessage());
 		}

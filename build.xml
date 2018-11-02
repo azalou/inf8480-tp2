@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="DistributedOP">
+    <property environment="env"/>
+    <property name="workspace_loc:DistributedOP/bin/serveur" value="bin/serveur"/>
+    <property name="workspace_loc:DistributedOP/bin/serviceDeNom" value="bin/serviceDeNom"/>
+    <property name="workspace_loc:DistributedOP/bin/client" value="bin/client"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="9"/>
+    <property name="source" value="9"/>
+    <path id="DistributedOP.classpath">
+        <pathelement location="bin"/>
+    </path>
+    <path id="run.Repartitor.classpath">
+        <path refid="DistributedOP.classpath"/>
+    </path>
+    <path id="run.CalcServer.classpath">
+        <path refid="DistributedOP.classpath"/>
+    </path>
+    <path id="run.ServiceDeNom.classpath">
+        <path refid="DistributedOP.classpath"/>
+    </path>
+    <path id="run.ClientOP.classpath">
+        <path refid="DistributedOP.classpath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="DistributedOP.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="Repartitor">
+        <java classname="repartiteur.Repartitor" failonerror="true" fork="yes">
+            <jvmarg line="-Djava.security.policy=policy"/>
+            <classpath refid="run.Repartitor.classpath"/>
+        </java>
+    </target>
+    <target name="CalcServer">
+        <java classname="serveur.CalcServer" dir="${workspace_loc:DistributedOP/bin/serveur}" failonerror="true" fork="yes">
+            <jvmarg line="-Djava.security.policy=policy"/>
+            <classpath refid="run.CalcServer.classpath"/>
+        </java>
+    </target>
+    <target name="ServiceDeNom">
+        <java classname="serviceDeNom.ServiceDeNom" dir="${workspace_loc:DistributedOP/bin/serviceDeNom}" failonerror="true" fork="yes">
+            <jvmarg line="-Djava.security.policy=policy"/>
+            <classpath refid="run.ServiceDeNom.classpath"/>
+        </java>
+    </target>
+    <target name="ClientOP">
+        <java classname="client.Client" dir="${workspace_loc:DistributedOP/bin/client}" failonerror="true" fork="yes">
+            <jvmarg line="-Djava.security.policy=policy"/>
+            <classpath refid="run.ClientOP.classpath"/>
+        </java>
+    </target>
+</project>

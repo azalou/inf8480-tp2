@@ -11,16 +11,13 @@ import java.util.List;
 
 import shared.MyIDentifier;
 import shared.NamingServiceInterface;
-import shared.RepartitorInterface;
 import shared.ServerInterface;
 
 public class CalcServer extends Thread implements ServerInterface {
-	private RepartitorInterface repartServer;
 	private NamingServiceInterface namingServer;
 	private static MyIDentifier myID = new MyIDentifier();
 	private Boolean serverUp = true;
-	private String serverID = null;
-	private int Capacite = 4;
+	//private int Capacite = 4;
 	private static final int RMIREGISTRY_PORT = 5003;
 	
 	Thread authMe = new Thread() {
@@ -49,7 +46,6 @@ public class CalcServer extends Thread implements ServerInterface {
 		myID.getTheRightIP("192");
 		myID.randomIdGen();
 		String repartitorIP = null;
-		byte[] operationList = null;
 		int repartitorPort;
 		String namingIP = null;
 		int namingPort;

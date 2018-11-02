@@ -11,7 +11,7 @@ package serveur;
 
 public class Operations {
 	
-	public static int pell(int x) {
+	public int pell(int x) {
 		if (x == 0)
 			return 0;
 		if (x == 1)
@@ -19,7 +19,7 @@ public class Operations {
 		return 2 * pell(x - 1) + pell(x - 2);
 	}
 	
-	public static int prime(int x) {
+	public int prime(int x) {
 		int highestPrime = 0;
 		
 		for (int i = 1; i <= x; ++i)

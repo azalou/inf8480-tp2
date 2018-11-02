@@ -20,9 +20,10 @@ public class Repartitor extends Thread implements RepartitorInterface {
 	private static final int RMIREGISTRY_PORT = 5001;
 	private String username = "repartitor1";
 	private String password = "repartitor1";
+	private int resultat = 0; 
 	private static MyIDentifier ip = new MyIDentifier();
 	//private MyNamingList namingList = new MyNamingList();
-	private RepartiteurServant DistributedOP = new RepartiteurServant();
+	private RepartitorServant DistributedOP = new RepartitorServant();
 	private static Boolean repartitorUp = false;
 	Thread authMe = new Thread() {
 		public void run() {
@@ -46,16 +47,20 @@ public class Repartitor extends Thread implements RepartitorInterface {
 			System.out.println("distributing the list of OP");
 			try {
 				DistributedOP.makeServerlist(namingService.getServerList().serverList);
+				resultat=DistributedOP.sendOpToServer();
 				
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.err.println("Erreur: " + e.getMessage());
+				
+			} catch (NotBoundException e) {
+				e.printStackTrace();
+				System.err.println("Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
 			}
 		}
 	};
 
 	public static void main(String[] args) {
-		//Repartitor repartitor = new Repartitor();
 		String namingServiceHostname = null;
 		int namingServicePort;
 		if (args.length == 2) {
@@ -107,11 +112,11 @@ public class Repartitor extends Thread implements RepartitorInterface {
 		}
 
 		try {
-			RepartitorInterface ClientStub = (RepartitorInterface) UnicastRemoteObject
+			RepartitorInterface repartitorStub = (RepartitorInterface) UnicastRemoteObject
 					.exportObject(this, 0);
 			//namingList.AddRepartitorToList(ip.ipAddress);
 			Registry registry = LocateRegistry.getRegistry(ip.ipAddress , RMIREGISTRY_PORT);
-			registry.rebind("repartitor", ClientStub);
+			registry.rebind("repartitor", repartitorStub);
 			System.out.println("Repartitor ready.");
 			System.out.println("Running on " + ip.ipAddress + ":" + RMIREGISTRY_PORT);
 			
@@ -131,9 +136,16 @@ public class Repartitor extends Thread implements RepartitorInterface {
 	public int distribute(byte[] operations) throws RemoteException {
 		String operationsStr = new String(operations);
 		DistributedOP.operationList = new ArrayList<String>(Arrays.asList(operationsStr.split("\n")));
+		DistributedOP.nbrOperations = DistributedOP.operationList.size();
 		sendOp.start();
-		//DistributedOP.RepartitionTache(namingList);
-		return 1234;
+		
+		try {
+			sendOp.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return resultat;
 	}
 
 

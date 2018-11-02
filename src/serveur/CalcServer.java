@@ -1,22 +1,28 @@
 package serveur;
 
 import java.rmi.AccessException;
+import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 import shared.MyIDentifier;
 import shared.NamingServiceInterface;
 import shared.RepartitorInterface;
+import shared.ServerInterface;
 
-public class CalcServer extends Thread {
+public class CalcServer extends Thread implements ServerInterface {
 	private RepartitorInterface repartServer;
 	private NamingServiceInterface namingServer;
 	private static MyIDentifier myID = new MyIDentifier();
 	private Boolean serverUp = true;
 	private String serverID = null;
 	private int Capacite = 4;
+	private static final int RMIREGISTRY_PORT = 5003;
+	
 	Thread authMe = new Thread() {
 		public void run() {
 			try {
@@ -53,9 +59,39 @@ public class CalcServer extends Thread {
 			repartitorPort = Integer.parseInt(args[1]);
 			namingPort = Integer.parseInt(args[3]);
 			CalcServer server = new CalcServer(repartitorIP, repartitorPort, namingIP, namingPort);
+			server.execute();
 		} else {
 			System.err.println("mandarory arguments: <RepartitorIP> <RepartitorPORT> <NamingIP> <NamingPORT>");
 		}
+	}
+
+
+
+	private void execute() {
+		
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager(new SecurityManager());
+		}
+		try {
+			ServerInterface serverStub = (ServerInterface) UnicastRemoteObject
+					.exportObject(this, 0);
+			//namingList.AddRepartitorToList(ip.ipAddress);
+			Registry registry = LocateRegistry.getRegistry(myID.ipAddress , RMIREGISTRY_PORT);
+			registry.rebind(myID.myUniqueID , serverStub);
+			System.out.println("Repartitor ready.");
+			System.out.println("Running on " + myID.ipAddress + ":" + RMIREGISTRY_PORT);
+			
+		} catch (ConnectException e) {
+			System.err.println("Impossible de se connecter au registre de service de Nom.\n Est-ce que rmiregistry est lancé ?");
+			System.err.println();
+			System.err.println("Erreur: " + e.getMessage());
+		} catch (Exception e) {
+			System.err.println("Erreur: " + e.getMessage());
+		}
+		
+
+		authMe.start();
+		calculate.start();
 	}
 
 
@@ -65,10 +101,8 @@ public class CalcServer extends Thread {
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
-		repartServer = loadRepartitorStub(repartitorIP, repartitorPort);
+		//repartServer = loadRepartitorStub(repartitorIP, repartitorPort);
 		namingServer = loadNamingServiceStub(NamingIP, NamingPort);
-		authMe.start();
-		calculate.start();
 
 	}
 
@@ -87,18 +121,45 @@ public class CalcServer extends Thread {
 		return stub;
 	}
 
-	private RepartitorInterface loadRepartitorStub(String distantRepartitor, int distantPort) {
-		RepartitorInterface stub = null;
-		try {
-			Registry registre = LocateRegistry.getRegistry(distantRepartitor, distantPort);
-			stub = (RepartitorInterface) registre.lookup("repartitor");
-		} catch (NotBoundException e) {
-			System.err.println("Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
-		} catch (AccessException e) {
-			System.err.println("Erreur: " + e.getMessage());
-		} catch (RemoteException e) {
-			System.err.println("Erreur: " + e.getMessage());
+//	private RepartitorInterface loadRepartitorStub(String distantRepartitor, int distantPort) {
+//		RepartitorInterface stub = null;
+//		try {
+//			Registry registre = LocateRegistry.getRegistry(distantRepartitor, distantPort);
+//			stub = (RepartitorInterface) registre.lookup("repartitor");
+//		} catch (NotBoundException e) {
+//			System.err.println("Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
+//		} catch (AccessException e) {
+//			System.err.println("Erreur: " + e.getMessage());
+//		} catch (RemoteException e) {
+//			System.err.println("Erreur: " + e.getMessage());
+//		}
+//		return stub;
+//	}
+
+
+
+	@Override
+	public int calculeThis(List<String> subList, String repartitorUsername, String repartitorPassword) throws RemoteException {
+		int somme = 0;
+		if (namingServer.verifyRepartitor(repartitorUsername, repartitorPassword)) {
+			System.out.println("repartitor is legit");
+			//finalement on y va pour les caluls
+			
+			for (String temp: subList) {
+				String[] operationAndValue = temp.split(" ");
+				int value = Integer.parseInt(operationAndValue[1]);
+				String type = operationAndValue[0];
+				Operations op = new Operations();
+				if (type.equals("pell")) {
+					somme += op.pell(value) % 4000;
+					somme = somme %4000;
+				}
+				if (type.equals("prime")) {
+					somme += op.prime(value) % 4000;
+					somme = somme %4000;
+				}	
+			}	
 		}
-		return stub;
+		return somme; 
 	}
 }

@@ -69,10 +69,12 @@ public class CalcServer extends Thread implements ServerInterface {
 			System.setSecurityManager(new SecurityManager());
 		}
 		try {
-			ServerInterface serverStub = (ServerInterface) UnicastRemoteObject
-					.exportObject(this, 0);
+			
 			//namingList.AddRepartitorToList(ip.ipAddress);
 			Registry registry = LocateRegistry.getRegistry(myID.ipAddress , RMIREGISTRY_PORT);
+			System.setProperty("java.rmi.server.hostname",myID.ipAddress);
+			ServerInterface serverStub = (ServerInterface) UnicastRemoteObject
+					.exportObject(this, 0);
 			registry.rebind(myID.myUniqueID , serverStub);
 			System.out.println("Repartitor ready.");
 			System.out.println("Running on " + myID.ipAddress + ":" + RMIREGISTRY_PORT);

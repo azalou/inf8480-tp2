@@ -20,7 +20,7 @@ public class Repartitor extends Thread implements RepartitorInterface {
 	private String username = "repartitor1";
 	private String password = "repartitor1";
 	private int resultat = 0; 
-	private static MyIDentifier ip = new MyIDentifier();
+	private static MyIDentifier myID = new MyIDentifier();
 	//private MyNamingList namingList = new MyNamingList();
 	private RepartitorServant DistributedOP = new RepartitorServant();
 	private static Boolean repartitorUp = false;
@@ -28,7 +28,7 @@ public class Repartitor extends Thread implements RepartitorInterface {
 		public void run() {
 			try {
 				while (repartitorUp) {
-					namingService.makeRepartitorAuth(ip.ipAddress, username, password);
+					namingService.makeRepartitorAuth(myID.ipAddress, username, password);
 					Thread.sleep(4000);
 				}
 			} catch (RemoteException e) {
@@ -40,24 +40,6 @@ public class Repartitor extends Thread implements RepartitorInterface {
 		}
 
 	};
-	
-	Thread sendOp = new Thread() {
-		public void run() {
-			System.out.println("distributing the list of OP");
-			try {
-				DistributedOP.makeServerlist(namingService.getServerList().serverList);
-				resultat=DistributedOP.sendOpToServer();
-				
-			} catch (RemoteException e) {
-				e.printStackTrace();
-				System.err.println("Erreur: " + e.getMessage());
-				
-			} catch (NotBoundException e) {
-				e.printStackTrace();
-				System.err.println("Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
-			}
-		}
-	};
 
 	public static void main(String[] args) {
 		String namingServiceHostname = null;
@@ -65,7 +47,7 @@ public class Repartitor extends Thread implements RepartitorInterface {
 		if (args.length == 2) {
 			namingServiceHostname = args[0];
 			namingServicePort = Integer.parseInt(args[1]);
-			ip.getTheRightIP("192");
+			myID.getTheRightIP("192");
 			repartitorUp = true;
 			Repartitor repartitor = new Repartitor(namingServiceHostname, namingServicePort);
 			repartitor.execute();
@@ -110,14 +92,15 @@ public class Repartitor extends Thread implements RepartitorInterface {
 			System.setSecurityManager(new SecurityManager());
 		}
 
-		try {
+		try {			
+			//namingList.AddRepartitorToList(ip.ipAddress);
+			Registry registry = LocateRegistry.getRegistry(myID.ipAddress , RMIREGISTRY_PORT);
+			System.setProperty("java.rmi.server.hostname",myID.ipAddress);
 			RepartitorInterface repartitorStub = (RepartitorInterface) UnicastRemoteObject
 					.exportObject(this, 0);
-			//namingList.AddRepartitorToList(ip.ipAddress);
-			Registry registry = LocateRegistry.getRegistry(ip.ipAddress , RMIREGISTRY_PORT);
 			registry.rebind("repartitor", repartitorStub);
 			System.out.println("Repartitor ready.");
-			System.out.println("Running on " + ip.ipAddress + ":" + RMIREGISTRY_PORT);
+			System.out.println("Running on " + myID.ipAddress + ":" + RMIREGISTRY_PORT);
 			
 		} catch (ConnectException e) {
 			System.err.println("Impossible de se connecter au registre de service de Nom.\n Est-ce que rmiregistry est lancé ?");
@@ -136,12 +119,18 @@ public class Repartitor extends Thread implements RepartitorInterface {
 		String operationsStr = new String(operations);
 		DistributedOP.operationList = new ArrayList<String>(Arrays.asList(operationsStr.split("\n")));
 		DistributedOP.nbrOperations = DistributedOP.operationList.size();
-		sendOp.start();
-		
+		System.out.println("distributing the list of OP");
 		try {
-			sendOp.join();
-		} catch (InterruptedException e) {
+			DistributedOP.makeServerlist(namingService.getServerList().serverList);
+			resultat=DistributedOP.sendOpToServer();
+			
+		} catch (RemoteException e) {
 			e.printStackTrace();
+			System.err.println("Erreur: " + e.getMessage());
+			
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+			System.err.println("Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
 		}
 		return resultat;
 	}

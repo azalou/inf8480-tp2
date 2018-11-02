@@ -16,7 +16,7 @@ import ca.inf8480.tp2.shared.NamingServiceInterface;
 
 public class ServiceDeNom implements NamingServiceInterface {
 	private static final int RMIREGISTRY_PORT = 5002;
-	private static MyIDentifier ip = new MyIDentifier();
+	private static MyIDentifier myID = new MyIDentifier();
 	private static final String REPART_LOGINS = "repartitors.txt";
 	private MyNamingList namingList = new MyNamingList();
 
@@ -36,13 +36,15 @@ public class ServiceDeNom implements NamingServiceInterface {
 			System.setSecurityManager(new SecurityManager());
 		}
 		try {
+			
+			myID.getTheRightIP("192");
+			Registry registry = LocateRegistry.getRegistry(myID.ipAddress , RMIREGISTRY_PORT);
+			System.setProperty("java.rmi.server.hostname",myID.ipAddress);
 			NamingServiceInterface namingStub = (NamingServiceInterface) UnicastRemoteObject
 					.exportObject(this, 0);
-			ip.getTheRightIP("192");
-			Registry registry = LocateRegistry.getRegistry(ip.ipAddress , RMIREGISTRY_PORT);
 			registry.rebind("nameserver", namingStub);
 			System.out.println("Naming Service ready.");
-			System.out.println("Running on " + ip.ipAddress + ":" + RMIREGISTRY_PORT);
+			System.out.println("Running on " + myID.ipAddress + ":" + RMIREGISTRY_PORT);
 			
 		} catch (RemoteException e) {
 			e.printStackTrace();
